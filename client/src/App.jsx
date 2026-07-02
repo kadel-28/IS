@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, KeyRound, Lock, LogOut, ShieldCheck, Sparkles, UserRound } from 'lucide-react';
 import axios from 'axios';
 import RailFenceTool from './components/RailFenceTool';
@@ -18,9 +18,30 @@ function App() {
   const [authMode, setAuthMode] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(window.localStorage.getItem('isLoggedIn'));
+  });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('isLoggedIn', isLoggedIn ? 'true' : 'false');
+      if (isLoggedIn && username) {
+        window.localStorage.setItem('loggedInUser', username);
+      }
+    }
+  }, [isLoggedIn, username]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = window.localStorage.getItem('loggedInUser');
+      if (savedUser) {
+        setUsername(savedUser);
+      }
+    }
+  }, []);
 
   const content = useMemo(() => {
     switch (activeTab) {
@@ -61,6 +82,10 @@ function App() {
     setUsername('');
     setPassword('');
     setMessage('You have been logged out.');
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('isLoggedIn');
+      window.localStorage.removeItem('loggedInUser');
+    }
   };
 
   return (
@@ -113,8 +138,8 @@ function App() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-slate-700/80 bg-slate-900/70 p-4 shadow-xl shadow-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">Instructor dashboard</p>
-              <h1 className="text-2xl font-semibold text-white">Crypto Concepts Playground</h1>
+              <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">Algorithm Visualizer</p>
+              <h1 className="text-2xl font-semibold text-white">Algorithm Visualizer</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-3 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm text-slate-300">
