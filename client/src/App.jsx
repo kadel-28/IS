@@ -6,6 +6,8 @@ import RsaTool from './components/RsaTool';
 import HashLab from './components/HashLab';
 import NotesWindow from './components/NotesWindow';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 const getStoredAuthState = () => {
   if (typeof window === 'undefined') return false;
   return window.localStorage.getItem('isLoggedIn') === 'true';
@@ -64,7 +66,7 @@ function App() {
     setMessage('');
     try {
       const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-      const response = await axios.post(`http://localhost:5001${endpoint}`, { username, password });
+      const response = await axios.post(`${API_BASE_URL}${endpoint}`, { username, password });
       if (response.data.success) {
         setIsLoggedIn(true);
         setMessage(`${authMode === 'login' ? 'Welcome back' : 'Account created'} ${username}`);

@@ -3,6 +3,7 @@ import { KeyRound, ShieldCheck, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 const RsaTool = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
   const [message, setMessage] = useState('Secret message');
   const [publicKey, setPublicKey] = useState('');
   const [privateKey, setPrivateKey] = useState('');
@@ -13,7 +14,7 @@ const RsaTool = () => {
   const generateKeys = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/crypto/rsa/generate');
+      const response = await axios.post(`${API_BASE_URL}/api/crypto/rsa/generate`);
       setPublicKey(response.data.publicKey);
       setPrivateKey(response.data.privateKey);
     } catch (error) {
@@ -26,7 +27,7 @@ const RsaTool = () => {
   const encryptMessage = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/crypto/rsa/encrypt', { message, publicKey });
+      const response = await axios.post(`${API_BASE_URL}/api/crypto/rsa/encrypt`, { message, publicKey });
       setEncrypted(response.data.encrypted);
     } catch (error) {
       console.error(error);
@@ -38,7 +39,7 @@ const RsaTool = () => {
   const decryptMessage = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/crypto/rsa/decrypt', { encryptedMessage: encrypted, privateKey });
+      const response = await axios.post(`${API_BASE_URL}/api/crypto/rsa/decrypt`, { encryptedMessage: encrypted, privateKey });
       setDecrypted(response.data.decrypted);
     } catch (error) {
       console.error(error);

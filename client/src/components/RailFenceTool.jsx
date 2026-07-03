@@ -9,6 +9,8 @@ const RailFenceTool = () => {
   const [rails, setRails] = useState(3);
   const [loading, setLoading] = useState(false);
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
   const performAction = async () => {
     setLoading(true);
     try {
@@ -16,7 +18,7 @@ const RailFenceTool = () => {
       const payload = mode === 'encrypt'
         ? { plaintext, rails }
         : { ciphertext: plaintext, rails };
-      const response = await axios.post(`http://localhost:5000${endpoint}`, payload);
+      const response = await axios.post(`${API_BASE_URL}${endpoint}`, payload);
       setCiphertext(response.data.ciphertext || response.data.plaintext || '');
     } catch (error) {
       console.error(error);
