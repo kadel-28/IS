@@ -6,6 +6,11 @@ import RsaTool from './components/RsaTool';
 import HashLab from './components/HashLab';
 import NotesWindow from './components/NotesWindow';
 
+const getStoredAuthState = () => {
+  if (typeof window === 'undefined') return false;
+  return window.localStorage.getItem('isLoggedIn') === 'true';
+};
+
 const tabs = [
   { id: 'rail', label: 'Rail Fence', icon: Lock },
   { id: 'rsa', label: 'RSA', icon: KeyRound },
@@ -18,10 +23,7 @@ function App() {
   const [authMode, setAuthMode] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return Boolean(window.localStorage.getItem('isLoggedIn'));
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(getStoredAuthState);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +64,7 @@ function App() {
     setMessage('');
     try {
       const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
-      const response = await axios.post(`http://localhost:5000${endpoint}`, { username, password });
+      const response = await axios.post(`http://localhost:5001${endpoint}`, { username, password });
       if (response.data.success) {
         setIsLoggedIn(true);
         setMessage(`${authMode === 'login' ? 'Welcome back' : 'Account created'} ${username}`);

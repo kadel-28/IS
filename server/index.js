@@ -9,7 +9,7 @@ const cryptoRoutes = require('./routes/crypto');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ;
 
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
 app.use(express.json({ limit: '2mb' }));
@@ -23,7 +23,7 @@ app.use('/api/crypto', cryptoRoutes);
 
 const startServer = async () => {
   try {
-    const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/crypto-demo';
+    const uri = process.env.MONGODB_URI;
     await mongoose.connect(uri);
     console.log('MongoDB connected');
   } catch (error) {
